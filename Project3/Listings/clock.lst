@@ -1,0 +1,239 @@
+A51 MACRO ASSEMBLER  CLOCK                                                                12/03/2024 22:16:46 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\clock.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE clock.asm SET(SMALL) DEBUG PRINT(.\Listings\clock.lst) OBJECT(.\Objects
+                      \clock.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0h  
+                       2             
+0000 7438              3     MOV A,#38H              ;initiating the LCD
+0002 11C0              4     Acall CommFunc  ;sending the command
+0004 11DB              5     Acall SmallDelay                ;give the LCD time to process
+                       6     
+0006 740E              7     MOV A,#0EH              ;Display on, cursor blinking
+0008 11C0              8     Acall CommFunc 
+000A 11DB              9     Acall SmallDelay 
+                      10     
+000C 7401             11     MOV A,#01               ;Clear display screen
+000E 11C0             12     Acall CommFunc 
+0010 11DB             13     Acall SmallDelay
+                      14     
+                      15     
+                      16             
+0012 7900             17     mov R1,#0                       ;_0:00:00
+0014 7A00             18     mov R2,#0                       ;0_:00:00
+0016 7B00             19     mov R3,#0                       ;00:_0:00
+0018 7C00             20     mov R4,#0                       ;00:0_:00
+001A 7D00             21     mov R5,#0                       ;00:00:_0
+001C 7E00             22     mov R6,#0                       ;00:00:0_
+                      23             
+                      24             
+001E                  25             loop:   
+                      26             
+001E 7480             27     MOV A,#80H              ;Force cursor to beginning to 1st line 
+0020 11C0             28     Acall CommFunc 
+0022 11DB             29     Acall SmallDelay
+                      30     
+                      31     
+0024 E9               32     MOV A,R1                ;Printing "_0:00:00"
+0025 11A4             33     Acall DataFunc 
+0027 11DB             34     Acall SmallDelay        
+0029 11CD             35     Acall MoveTheCursor             ;to shift the cursor
+                      36             
+002B EA               37     MOV A,R2                ;Printing ";0_:00:00"
+002C 11A4             38     Acall DataFunc 
+002E 11DB             39     Acall SmallDelay        
+0030 11CD             40     Acall MoveTheCursor             ;to shift the cursor
+                      41     
+0032 743A             42     MOV A,#':'              ;Printing ":"
+0034 11B3             43     Acall DoubleDotFunc 
+0036 11DB             44     Acall SmallDelay
+0038 11CD             45     Acall MoveTheCursor             ;to shift the cursor
+                      46             
+003A EB               47     MOV A,R3                ;Printing "00:_0:00"
+003B 11A4             48     Acall DataFunc 
+003D 11DB             49     Acall SmallDelay        
+003F 11CD             50     Acall MoveTheCursor             ;to shift the cursor
+                      51             
+0041 EC               52     MOV A,R4                ;Printing ";00:0_:00"
+0042 11A4             53     Acall DataFunc 
+0044 11DB             54     Acall SmallDelay        
+0046 11CD             55     Acall MoveTheCursor             ;to shift the cursor    
+                      56             
+0048 743A             57     MOV A,#':'              ;Printing ":"
+A51 MACRO ASSEMBLER  CLOCK                                                                12/03/2024 22:16:46 PAGE     2
+
+004A 11B3             58     Acall DoubleDotFunc 
+004C 11DB             59     Acall SmallDelay
+004E 11CD             60     Acall MoveTheCursor             ;to shift the cursor    
+                      61             
+0050 ED               62     MOV A,R5                ;Printing "00:00:_0"
+0051 11A4             63     Acall DataFunc 
+0053 11DB             64     Acall SmallDelay        
+0055 11CD             65     Acall MoveTheCursor             ;to shift the cursor
+                      66             
+0057 EE               67     MOV A,R6                ;Printing ";00:00:0_"
+0058 11A4             68     Acall DataFunc 
+005A 11DB             69     Acall SmallDelay        
+005C 11CD             70     Acall MoveTheCursor             ;to shift the cursor            
+                      71             
+                      72             
+                      73             
+005E 118C             74     Acall OneSecondDelay
+                      75     
+0060 BE0A27           76     CJNE R6,#10,n1   ;"00:00:09"
+                      77     
+0063 EE               78     mov A,R6                
+0064 2D               79     add A,R5                ;R5+R6 to decide if we will increment R4 or no
+                      80     
+0065 7E00             81     MOV R6,#0
+0067 0D               82     INC R5                  ;"00:00:10"
+                      83     
+                      84     
+                      85     
+0068 B40F1F           86     CJNE A,#15,n1   ;"00:00:59"
+006B 7D00             87     MOV R5,#0
+006D 7E00             88     MOV R6,#0
+006F 7400             89     MOV A,#0
+0071 0C               90     INC R4
+                      91     
+0072 BC0A15           92     CJNE R4,#10,n1   ;"00:09:00"
+                      93     
+0075 EC               94     mov A,R4                
+0076 2B               95     add A,R3                ;R3+R4 to decide if we will increment R2 or no
+                      96     
+0077 7C00             97     MOV R4,#0
+0079 0B               98     INC R3
+                      99     
+                     100     
+                     101     
+007A B40F0D          102     CJNE A,#15,n1   ;"00:59:00"
+007D 7B00            103     MOV R3,#0
+007F 7C00            104     MOV R4,#0
+0081 7400            105     MOV A,#0
+0083 0A              106     INC R2
+                     107     
+0084 BA0A03          108     CJNE R2,#10,n1   ;"09:00:00"
+0087 7A00            109     MOV R2,#0
+0089 09              110     INC R1
+                     111             
+                     112             
+008A                 113     n1:
+                     114     ;SETB P2.3
+                     115     ;Acall OneSecondDelay   
+                     116     ;CLR P2.3
+                     117     ;Acall OneSecondDelay   
+                     118     
+008A 8092            119     sjmp loop
+                     120             
+008C                 121     OneSecondDelay:
+008C 7864            122             mov R0,#100                     ; counter to make the timer loop for 100 times
+008E 758901          123             mov TMOD ,#01h                  ; mode 16 bit
+A51 MACRO ASSEMBLER  CLOCK                                                                12/03/2024 22:16:46 PAGE     3
+
+0091                 124     Here:
+0091 758AF0          125             mov TL0 ,#0F0h                  ; the value in decimal is equal to 55536 to make 10
+                              micro seconds 
+0094 758CD8          126             mov TH0 ,#0D8h                  ; the value in decimal is equal to 55536 to make 10
+                              micro seconds
+0097 D28C            127             SETB TR0
+0099 308DFD          128             Again: JNB TF0 ,Again   ; wait till timer finish
+009C C28C            129             CLR TR0
+009E C28D            130             CLR TF0
+00A0 D8EF            131             DJNZ R0,Here                    ; looping to make a total of 1 second
+00A2 0E              132             INC R6                                  ; Incrementing the seconds register
+00A3 22              133     RET     
+                     134     
+                     135     
+                     136     
+00A4                 137     DataFunc:
+00A4 4430            138                     orl A,#30h
+00A6 F590            139                     MOV p1,A                ;To send the data
+00A8 D2A0            140                     SETB P2.0               ;Make Rs=1 to send DATA
+00AA C2A1            141                     CLR P2.1                ;Make Rw=0 to write
+                     142     
+00AC D2A2            143                     SETB P2.2               ;To send High - Low signal
+00AE 11DB            144                     Acall SmallDelay
+00B0 C2A2            145                     CLR P2.2
+00B2 22              146     RET
+                     147                     
+00B3                 148     DoubleDotFunc:
+00B3 F590            149                     MOV p1,A                ;To send the data
+00B5 D2A0            150                     SETB P2.0               ;Make Rs=1 to send DATA
+00B7 C2A1            151                     CLR P2.1                ;Make Rw=0 to write
+                     152     
+00B9 D2A2            153                     SETB P2.2               ;To send High - Low signal
+00BB 11DB            154                     Acall SmallDelay
+00BD C2A2            155                     CLR P2.2
+00BF 22              156     RET             
+                     157                     
+                     158             
+00C0                 159     CommFunc:
+00C0 F590            160                     MOV p1,A                ;To choose the command
+00C2 C2A0            161                     CLR P2.0                ;Make Rs=0 to send command
+00C4 C2A1            162                     CLR P2.1                ;Make Rw=0 to write
+                     163             
+00C6 D2A2            164                     SETB P2.2               ;To send High - Low signal
+00C8 11DB            165                     Acall SmallDelay
+00CA C2A2            166                     CLR P2.2
+00CC 22              167     RET
+                     168                     
+                     169                     
+                     170                     
+                     171                     
+                     172                     
+00CD                 173     MoveTheCursor:
+00CD 759006          174                     MOV p1,#06h     ;To shift the cursor to the right
+00D0 C2A0            175                     CLR P2.0                ;Make Rs=0 to send command
+00D2 C2A1            176                     CLR P2.1                ;Make Rw=0 to write
+                     177             
+00D4 D2A2            178                     SETB P2.2               ;To send High - Low signal
+00D6 11DB            179                     Acall SmallDelay
+00D8 C2A2            180                     CLR P2.2
+00DA 22              181     RET
+                     182     
+                     183     
+00DB                 184     SmallDelay:
+00DB 7FFF            185                 MOV R7 ,#255
+00DD DFFE            186             n7: DJNZ R7,n7
+00DF 22              187     RET
+A51 MACRO ASSEMBLER  CLOCK                                                                12/03/2024 22:16:46 PAGE     4
+
+                     188     
+                     189     END
+A51 MACRO ASSEMBLER  CLOCK                                                                12/03/2024 22:16:46 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AGAIN. . . . . . .  C ADDR   0099H   A   
+COMMFUNC . . . . .  C ADDR   00C0H   A   
+DATAFUNC . . . . .  C ADDR   00A4H   A   
+DOUBLEDOTFUNC. . .  C ADDR   00B3H   A   
+HERE . . . . . . .  C ADDR   0091H   A   
+LOOP . . . . . . .  C ADDR   001EH   A   
+MOVETHECURSOR. . .  C ADDR   00CDH   A   
+N1 . . . . . . . .  C ADDR   008AH   A   
+N7 . . . . . . . .  C ADDR   00DDH   A   
+ONESECONDDELAY . .  C ADDR   008CH   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+SMALLDELAY . . . .  C ADDR   00DBH   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

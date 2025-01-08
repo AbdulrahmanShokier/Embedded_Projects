@@ -1,0 +1,1 @@
+"clock.asm" SET (SMALL) DEBUG PRINT(.\Listings\clock.lst) OBJECT(.\Objects\clock.obj) EP
